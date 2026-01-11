@@ -1,4 +1,4 @@
-export interface IFile {
+export interface IDocument {
   filename: string;
   uploadDate: Date;
 }

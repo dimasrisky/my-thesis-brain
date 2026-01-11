@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm rebuild:*)",
+      "Bash(npx typeorm migration:generate:*)",
+      "Bash(pnpm run start:dev:*)"
+    ]
+  }
+}

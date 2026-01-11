@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { BaseRepository } from 'src/common/bases/base.repository';
 import { DataSource } from 'typeorm';
-import { File } from './entities/file.entity';
+import { DocumentChunks } from './entities/document-chunks.entity';
 
 @Injectable()
-export class FileRepository extends BaseRepository<File> {
+export class DocumentChunksRepository extends BaseRepository<DocumentChunks> {
   constructor(private readonly dataSource: DataSource) {
-    super(File, dataSource);
+    super(DocumentChunks, dataSource);
   }
 }

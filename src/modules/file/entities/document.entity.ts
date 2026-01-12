@@ -1,7 +1,8 @@
 import { BaseEntity } from 'src/common/bases/base.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { IDocument } from '../interfaces/document.interface';
 import { DocumentChunks } from './document-chunks.entity';
+import { User } from 'src/modules/user/entities/user.entity';
 
 @Entity()
 export class Document extends BaseEntity implements IDocument {
@@ -19,4 +20,11 @@ export class Document extends BaseEntity implements IDocument {
     },
   )
   documentChunks: DocumentChunks[];
+
+  @ManyToOne(
+    () => User,
+    user => user.documents,
+    { onDelete: 'CASCADE' }
+  )
+  user: User;
 }

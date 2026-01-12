@@ -21,10 +21,6 @@ export class Document extends BaseEntity implements IDocument {
   )
   documentChunks: DocumentChunks[];
 
-  @ManyToOne(
-    () => User,
-    user => user.documents,
-    { onDelete: 'CASCADE' }
-  )
+  @ManyToOne(() => User, (user) => user.documents, { onDelete: 'CASCADE' })
   user: User;
 }

@@ -11,9 +11,6 @@ export class User extends BaseEntity implements IUser {
   @Column({ name: 'password', unique: false, nullable: false })
   password: string;
 
-  @OneToMany(
-    () => Document,
-    document => document.user
-  )
-  documents: Document[]
+  @OneToMany(() => Document, (document) => document.user)
+  documents: Document[];
 }

@@ -7,7 +7,6 @@ import { AllExceptionFilter } from './common/bases/exceptions/base.exception';
 import { typeOrmConfig } from './database/database';
 import { DocumentModule } from './modules/file/document.module';
 import { ChatModule } from './modules/chat/chat.module';
-import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/jwt.guard';
 
@@ -17,7 +16,6 @@ import { JwtAuthGuard } from './modules/auth/jwt.guard';
       isGlobal: true,
     }),
     DocumentModule,
-    UserModule,
     AuthModule,
     ChatModule,
     TypeOrmModule.forRootAsync({

@@ -53,7 +53,7 @@ export class ChatService {
     3. DILARANG mengarang teori, definisi, kesimpulan, atau referensi.\n
     4. Jika informasi yang ditanyakan TIDAK ditemukan atau tidak relevan sama sekali pada CONTEXT,
       jawab dengan tegas dan jujur:
-      "Informasi tersebut tidak ditemukan dalam dokumen yang tersedia." \n
+      "Informasi tersebut tidak ditemukan dalam dokumen yang tersedia.". tanpa kata pembuka \n
     5. Gunakan bahasa akademik yang jelas, formal, dan mudah dipahami mahasiswa.\n
     6. Jika memungkinkan, sebutkan sumber berupa nama dokumen dan nomor halaman.\n
     7. Jangan menjawab terlalu panjang, fokus pada inti informasi.\n\n
@@ -64,7 +64,7 @@ export class ChatService {
     PERTANYAAN:\n
     ${chatDto.question}
 
-    Tampilkan Sumber yang saya sertakan ini dibagian akhir dengan format [Sumber: NamaDocument - Hal, NamaDocument - Hal] : (Hanya tampilkan jika sudah memenuhi aturan wajib no 4)
+    Tampilkan Sumber yang saya sertakan ini dibagian akhir dengan format [Sumber: NamaDocument - Hal, NamaDocument - Hal] Jika pertanyaan yang diajukan relevan dengan CONTEXT
     ${preference}
     `;
     const result = await llmModel.invoke(promptTemplate);

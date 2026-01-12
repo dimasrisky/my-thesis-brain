@@ -7,6 +7,7 @@ import { CreateChatDto } from './dto/create-chat.dto';
 import { ChatService } from './chat.service';
 import { ResponseChatDto } from './dto/response-chat.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { Request as ExpressRequest } from 'express';
 
 @Controller('chat')
 @ApiTags('Chat')
@@ -24,8 +25,9 @@ export class ChatController {
   )
   async create(
     @Body() createDto: CreateChatDto,
+    @Request() req: ExpressRequest,
   ): Promise<BaseSuccessResponse<ResponseChatDto>> {
-    const result = await this.chatService.generateAnswer(createDto);
+    const result = await this.chatService.generateAnswer(createDto, req.user!);
 
     return {
       data: plainToInstance(ResponseChatDto, result, {

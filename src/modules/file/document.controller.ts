@@ -2,14 +2,13 @@ import {
   Body,
   Controller,
   Post,
+  Request,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import {
-  CreateSwaggerExample,
-} from 'src/common/swagger/swagger-example.response';
+import { CreateSwaggerExample } from 'src/common/swagger/swagger-example.response';
 import { ResponseDocumentDto } from './dto/response-document.dto';
 import { DocumentService } from './document.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -17,6 +16,7 @@ import { diskStorage } from 'multer';
 import * as path from 'path';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import type { Request as ExpressRequest } from 'express';
 
 @Controller('documents')
 @ApiTags('Document')
@@ -51,8 +51,12 @@ export class DocumentController {
     false,
     'Upload File PDF',
   )
-  async create(@UploadedFile() file: Express.Multer.File): Promise<boolean> {
-    const result = await this.documentService.uploadFile(file);
+  async create(
+    @UploadedFile() file: Express.Multer.File,
+    @Request() req: ExpressRequest,
+  ): Promise<boolean> {
+    console.log(req.user);
+    const result = await this.documentService.uploadFile(file, req.user!);
 
     return result;
   }

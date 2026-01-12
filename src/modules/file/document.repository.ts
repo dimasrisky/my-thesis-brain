@@ -18,21 +18,23 @@ export class DocumentRepository extends BaseRepository<Document> {
     return embedding;
   }
 
-  public async similaritySearh(question: string) {
+  public async similaritySearh(question: string, userId: number) {
     try {
       const embedding = this.initializeEmbeddingModel();
       const vectorQuestion = await embedding.embedQuery(question);
       const vectorString = `[${vectorQuestion.join(',')}]`;
 
-      const result: { page_number: number; content: string }[] =
+      const result: { page_number: number; content: string; title: string }[] =
         await this.dataSource.query(
           `
-      SELECT page_number, content
-      FROM document_chunks
-      ORDER BY embedding <=> $1::vector
+      SELECT dc.page_number, dc.content, d.filename as title
+      FROM document_chunks dc
+      JOIN document d ON dc."documentId" = d.id
+      WHERE d."userId" = $2
+      ORDER BY dc.embedding <=> $1::vector
       LIMIT 3
       `,
-          [vectorString],
+          [vectorString, userId],
         );
       return result;
     } catch (err) {

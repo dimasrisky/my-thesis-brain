@@ -11,6 +11,7 @@ import * as path from 'path';
 import { OllamaEmbeddings } from '@langchain/ollama';
 import { DocumentChunksRepository } from './document_chunks.repository';
 import { IMetadata } from './interfaces/metadata.interface';
+import { IJwtPayload } from 'src/common/interfaces/jwt-payload.interface';
 
 @Injectable()
 export class DocumentService extends BaseService<
@@ -56,7 +57,10 @@ export class DocumentService extends BaseService<
     };
   }
 
-  async uploadFile(file: Express.Multer.File): Promise<boolean> {
+  async uploadFile(
+    file: Express.Multer.File,
+    user: IJwtPayload,
+  ): Promise<boolean> {
     const pdfLoader = new PDFLoader(
       path.join(
         process.cwd(),
@@ -74,6 +78,9 @@ export class DocumentService extends BaseService<
     const chunk_documents = await textSplitter.splitDocuments(documents);
 
     const _createDocument = this.documentRepository.create({
+      user: {
+        id: user.userId,
+      },
       filename: file.originalname,
       uploadDate: new Date(),
     });

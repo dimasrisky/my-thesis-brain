@@ -27,13 +27,18 @@ export class DocumentRepository extends BaseRepository<Document> {
       const result: { page_number: number; content: string; title: string }[] =
         await this.dataSource.query(
           `
-      SELECT dc.page_number, dc.content, d.filename as title
-      FROM document_chunks dc
-      JOIN document d ON dc."documentId" = d.id
-      WHERE d."userId" = $2
-      ORDER BY dc.embedding <=> $1::vector
-      LIMIT 3
-      `,
+          SELECT
+            dc.page_number,
+            dc.content,
+            d.filename AS title,
+            dc.embedding <=> $1::vector AS distance
+          FROM document_chunks dc
+          JOIN document d ON dc."documentId" = d.id
+          WHERE d."userId" = $2
+            AND dc.embedding <=> $1::vector < 0.5
+          ORDER BY distance
+          LIMIT 3;
+        `,
           [vectorString, userId],
         );
       return result;

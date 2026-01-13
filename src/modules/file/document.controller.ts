@@ -55,7 +55,6 @@ export class DocumentController {
     @UploadedFile() file: Express.Multer.File,
     @Request() req: ExpressRequest,
   ): Promise<boolean> {
-    console.log(req.user);
     const result = await this.documentService.uploadFile(file, req.user!);
 
     return result;

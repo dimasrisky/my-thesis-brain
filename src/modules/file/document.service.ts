@@ -12,6 +12,7 @@ import { OllamaEmbeddings } from '@langchain/ollama';
 import { DocumentChunksRepository } from './document_chunks.repository';
 import { IMetadata } from './interfaces/metadata.interface';
 import { IJwtPayload } from 'src/common/interfaces/jwt-payload.interface';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class DocumentService extends BaseService<
@@ -22,6 +23,7 @@ export class DocumentService extends BaseService<
   constructor(
     private readonly documentRepository: DocumentRepository,
     private readonly documentChunksRepository: DocumentChunksRepository,
+    private readonly configService: ConfigService,
   ) {
     super(documentRepository);
   }
@@ -47,8 +49,8 @@ export class DocumentService extends BaseService<
     });
 
     const embeddingModel = new OllamaEmbeddings({
-      model: 'nomic-embed-text',
-      baseUrl: 'http://localhost:11434',
+      model: this.configService.get<string>('EMBEDDING_MODEL'),
+      baseUrl: this.configService.get<string>('OLLAMA_HOST'),
     });
 
     return {

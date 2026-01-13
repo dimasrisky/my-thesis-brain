@@ -4,15 +4,19 @@ import { DocumentRepository } from '../file/document.repository';
 import { Ollama } from '@langchain/ollama';
 import { ResponseChatDto } from './dto/response-chat.dto';
 import { IJwtPayload } from 'src/common/interfaces/jwt-payload.interface';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ChatService {
-  constructor(private readonly documentRepository: DocumentRepository) {}
+  constructor(
+    private readonly documentRepository: DocumentRepository,
+    private readonly configService: ConfigService,
+  ) {}
 
   private initializeModelLLM(model: string) {
     const instance = new Ollama({
       model,
-      baseUrl: 'http://localhost:11434',
+      baseUrl: this.configService.get<string>('OLLAMA_HOST'),
     });
 
     return instance;
@@ -22,7 +26,9 @@ export class ChatService {
     chatDto: CreateChatDto,
     user: IJwtPayload,
   ): Promise<ResponseChatDto> {
-    const llmModel = this.initializeModelLLM('qwen2.5:3b');
+    const llmModel = this.initializeModelLLM(
+      this.configService.get<string>('LLM_MODEL')!,
+    );
     const similarityDocument: {
       page_number: number;
       content: string;

@@ -1,0 +1,20 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - '11434:11434'
+    volumes:
+      - 'ollama_data:/root/.ollama'
+  db:
+    image: pgvector/pgvector:pg16
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: thesis_brain
+    volumes:
+      - 'postgre_data:/var/lib/postgresql/data'
+volumes:
+  ollama_data:
+  postgre_data:

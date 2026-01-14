@@ -9,7 +9,7 @@ import {
   Sse,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { BaseSuccessResponse } from 'src/common/bases/base.response';
 import { CreateSwaggerExample } from 'src/common/swagger/swagger-example.response';
@@ -31,6 +31,7 @@ export class ChatController {
   @Header('Cache-Control', 'no-cache')
   @Header('Connection', 'keep-alive')
   @Header('X-Accel-Buffering', 'no')
+  @ApiOperation({ summary: 'Start Conversation (Stream) ' })
   generateStreamAnswer(
     @Query() createDto: CreateChatDto,
     @Request() req: ExpressRequest,

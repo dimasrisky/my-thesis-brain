@@ -55,6 +55,6 @@ async function bootstrap() {
 
   app.use('/api/iqro', OpenApiSpecification);
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 void bootstrap();

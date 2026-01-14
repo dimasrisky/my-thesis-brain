@@ -2,97 +2,250 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# My Thesis Brain
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+> **Asisten Riset Pribadi** untuk mahasiswa tingkat akhir yang sedang mengerjakan skripsi
 
-## Description
+## Latar Belakang Project
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+**My Thesis Brain** adalah solusi Backend API yang memungkinkan setiap mahasiswa untuk memiliki "Asisten Riset Pribadi". Mahasiswa bisa meng-upload PDF mereka sendiri, lalu bertanya atau mencari topik spesifik hanya dari referensi yang mereka miliki.
 
-## Project setup
+### Fitur Utama
 
-```bash
-$ pnpm install
+- **Multi-User Authentication** - Setiap user memiliki akun pribadi dengan data yang terisolasi
+- **PDF Upload & Processing** - Upload PDF jurnal, ebook, atau paper kamu
+- **Semantic Search** - Cari topik spesifik menggunakan vector embeddings (RAG)
+- **AI-Powered Q&A** - Tanya jawab dengan dokumenmu menggunakan LLM
+- **Streaming Response** - Real-time response generation untuk pengalaman yang lebih baik
+- **Data Isolation** - Data user A tidak bocor ke user B (setiap user hanya bisa mengakses dokumen sendiri)
+
+## Teknologi yang Digunakan
+
+### Backend Framework
+- **NestJS** - Progressive Node.js framework untuk membangun aplikasi backend yang scalable
+- **TypeScript** - Type safety dan better developer experience
+
+### Database & Vector Storage
+- **PostgreSQL** dengan **pgvector** - Relational database dengan kemampuan vector similarity search
+- **TypeORM** - ORM untuk TypeScript dan JavaScript
+
+### AI & LLM
+- **Ollama** - Local LLM inference engine (tidak perlu API key berbayar)
+- **LangChain** - Framework untuk mengembangkan aplikasi dengan LLM
+- **RAG (Retrieval Augmented Generation)** - Teknik untuk menghasilkan jawaban berdasarkan dokumen spesifik
+
+### Authentication
+- **JWT (JSON Web Token)** - Stateless authentication
+- **bcrypt** - Password hashing
+
+### API Documentation
+- **Scalar** - Modern API documentation references
+- **Swagger** - OpenAPI specification
+
+## Project Structure
+
+```
+src/
+├── common/              # Shared utilities, decorators, DTOs
+│   ├── bases/          # Base classes for entities, services, repositories
+│   ├── decorators/     # Custom decorators
+│   ├── dto/            # Common DTOs (pagination, query params)
+│   └── exceptions/     # Custom exception filters
+├── config/             # Configuration module
+├── database/           # Database configuration & migrations
+├── modules/
+│   ├── auth/           # Authentication module (JWT, login, register)
+│   ├── user/           # User management
+│   ├── file/           # Document upload & processing
+│   └── chat/           # Chat & Q&A with RAG
+└── main.ts             # Application entry point
 ```
 
-## Compile and run the project
+## Getting Started
+
+### Prerequisites
+
+- **Node.js** (v18 or higher)
+- **Docker** & **Docker Compose**
+- **pnpm** (recommended) or npm/yarn
+
+### 1. Clone & Install Dependencies
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+git clone <repository-url>
+cd my-thesis-brain
+pnpm install
 ```
 
-## Run tests
+### 2. Setup Environment Variables
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` file sesuai konfigurasi:
+
+```env
+NODE_ENV=development
+PORT=3000
+
+# Database Configuration
+DATABASE_HOST=localhost
+DATABASE_PORT=5433
+DATABASE_USERNAME=postgres
+DATABASE_PASSWORD=postgres
+DATABASE_NAME=thesis_brain
+
+# JWT Configuration
+JWT_SECRET=your-secret-key-here
+JWT_EXPIRES=1d
+
+# Ollama LLM Configuration
+OLLAMA_HOST=http://localhost:11434
+LLM_MODEL=llama3.1
+EMBEDDING_MODEL=nomic-embed-text
+```
+
+### 3. Start Services dengan Docker
+
+```bash
+docker-compose up -d
+```
+
+Ini akan menjalankan:
+- **PostgreSQL** dengan pgvector di port 5433
+- **Ollama** di port 11434
+
+### 4. Pull Ollama Models
+
+```bash
+# Pull model LLM (untuk generate jawaban)
+docker exec -it <ollama-container-id> ollama pull llama3.1
+
+# Pull embedding model (untuk vector search)
+docker exec -it <ollama-container-id> ollama pull nomic-embed-text
+```
+
+### 5. Run Database Migrations
+
+```bash
+pnpm run migration:run
+```
+
+### 6. Start Development Server
+
+```bash
+pnpm run start:dev
+```
+
+API akan berjalan di `http://localhost:3000`
+
+### 7. Access API Documentation
+
+Buka browser dan kunjungi:
+
+```
+http://localhost:3000/api
+```
+
+## API Endpoints
+
+### Authentication
+- `POST /auth/register` - Register new user
+- `POST /auth/login` - Login dan dapatkan JWT token
+
+### Documents
+- `POST /documents` - Upload PDF (requires authentication)
+  - Body: `file` (multipart/form-data)
+  - Returns: Success confirmation
+
+### Chat & Q&A
+- `POST /chat` - Ask question about your documents
+  - Body: `{ "query": "Apa teori tentang X?" }`
+  - Returns: AI-generated answer from your documents
+
+- `GET /chat/stream` - Streaming response (Server-Sent Events)
+  - Query: `?query=Apa teori tentang X?`
+  - Returns: Real-time streaming response
+
+## Cara Kerja RAG (Retrieval Augmented Generation)
+
+```
+User Question
+      ↓
+[Generate Query Embedding]
+      ↓
+[Vector Similarity Search] → Top-k Relevant Chunks from User's Documents
+      ↓
+[Construct Prompt with Context]
+      ↓
+[LLM Generates Answer] → Final Response to User
+```
+
+1. **Query Embedding** - Pertanyaan user di-convert menjadi vector
+2. **Vector Search** - Mencari chunk dokumen yang paling relevant dengan query (hanya dari dokumen user tersebut)
+3. **Context Augmentation** - Chunk yang relevant ditambahkan ke prompt sebagai konteks
+4. **Answer Generation** - LLM menghasilkan jawaban berdasarkan konteks yang diberikan
+
+## Keamanan & Data Isolation
+
+- Setiap user hanya bisa mengakses dokumen yang mereka upload sendiri
+- JWT authentication untuk setiap request
+- Vector search dilakukan hanya pada dokumen milik user yang sedang login
+- Password di-hash menggunakan bcrypt
+
+## Testing
 
 ```bash
 # unit tests
-$ pnpm run test
+pnpm run test
 
 # e2e tests
-$ pnpm run test:e2e
+pnpm run test:e2e
 
 # test coverage
-$ pnpm run test:cov
+pnpm run test:cov
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Production Build
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+pnpm run build
+pnpm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Troubleshooting
 
-## Resources
+### Ollama connection error
+Pastikan Ollama container berjalan:
+```bash
+docker ps | grep ollama
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### Database connection error
+Check PostgreSQL container:
+```bash
+docker ps | grep pgvector
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Migration error
+Pastikan database sudah dibuat dan migration sudah di-run:
+```bash
+pnpm run typeorm migration:show
+```
 
-## Support
+## Contributing
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Support
+
+For questions and support, please open an issue in the repository.
+
+---
+
+**Built with** NestJS | PostgreSQL | Ollama | LangChain

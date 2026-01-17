@@ -5,4 +5,8 @@ export class ResponseLoginDto {
   @Expose()
   @ApiProperty({ description: 'token', example: '' })
   accessToken: string;
+
+  @Expose()
+  @ApiProperty({ description: 'refreshToken', example: '' })
+  refreshToken: string;
 }

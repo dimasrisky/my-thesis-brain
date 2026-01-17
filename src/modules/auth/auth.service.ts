@@ -9,12 +9,14 @@ import { ResponseLoginDto } from './dto/response-login.dto';
 import { IJwtPayload } from 'src/common/interfaces/jwt-payload.interface';
 import { NotFoundException } from 'src/common/bases/exceptions/templates/not-found.exception';
 import { ResponseUserDto } from '../user/dto/response-user.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async register(createDto: CreateUserDto): Promise<ResponseRegisterDto> {
@@ -63,8 +65,12 @@ export class AuthService {
     }
 
     const payload = { sub: user.id, email: user.email };
-    const token = this.jwtService.sign(payload);
-
-    return { accessToken: token };
+    const token = this.jwtService.sign(payload, {
+      expiresIn: this.configService.get('JWT_EXPIRES'),
+    });
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: this.configService.get('JWT_EXPIRES_REFRESH_TOKEN'),
+    });
+    return { accessToken: token, refreshToken };
   }
 }

@@ -10,6 +10,9 @@ import { IJwtPayload } from 'src/common/interfaces/jwt-payload.interface';
 import { NotFoundException } from 'src/common/bases/exceptions/templates/not-found.exception';
 import { ResponseUserDto } from '../user/dto/response-user.dto';
 import { ConfigService } from '@nestjs/config';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { BadRequestException } from 'src/common/bases/exceptions/templates/bad-request.exception';
+import { BaseExceptionResponse } from 'src/common/bases/base.response';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +34,35 @@ export class AuthService {
       console.log(err);
       throw err;
     }
+  }
+
+  refreshToken(
+    refreshTokenDto: RefreshTokenDto,
+    user: IJwtPayload,
+  ): ResponseLoginDto {
+    if (
+      !this.jwtService.verify(
+        refreshTokenDto.refreshToken,
+        this.configService.get('adoiawhdoahdo'),
+      )
+    ) {
+      throw new BadRequestException(
+        new BaseExceptionResponse(
+          'invalidInput',
+          'invalid input token',
+          'token',
+        ),
+      );
+    }
+
+    const payload = { sub: user.userId, email: user.email };
+    const token = this.jwtService.sign(payload, {
+      expiresIn: this.configService.get('JWT_EXPIRES'),
+    });
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: this.configService.get('JWT_EXPIRES_REFRESH_TOKEN'),
+    });
+    return { accessToken: token, refreshToken };
   }
 
   async me(user: IJwtPayload): Promise<ResponseUserDto> {

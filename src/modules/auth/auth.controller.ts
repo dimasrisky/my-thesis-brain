@@ -22,6 +22,7 @@ import type { Request as ExpressRequest } from 'express';
 import { ResponseUserDto } from '../user/dto/response-user.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from './jwt.guard';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -57,6 +58,27 @@ export class AuthController {
     return {
       data: plainToInstance(ResponseUserDto, result, {
         excludeExtraneousValues: true,
+      }),
+    };
+  }
+
+  @Post('refresh-token')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @CreateSwaggerExample(
+    RefreshTokenDto,
+    ResponseLoginDto,
+    false,
+    'Refresh Token',
+  )
+  refreshToken(
+    @Request() req: ExpressRequest,
+    @Body() refreshTokenDto: RefreshTokenDto,
+  ): BaseSuccessResponse<ResponseLoginDto> {
+    const result = this.authService.refreshToken(refreshTokenDto, req.user!);
+    return {
+      data: plainToInstance(ResponseLoginDto, result, {
+        excludeExtraneousValues: false,
       }),
     };
   }

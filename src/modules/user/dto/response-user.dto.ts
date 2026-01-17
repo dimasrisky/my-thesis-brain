@@ -13,8 +13,4 @@ export class ResponseUserDto {
   @Expose()
   @ApiProperty({ description: '', example: null })
   email: string;
-
-  @Expose()
-  @ApiProperty({ description: '', example: null })
-  password: string;
 }

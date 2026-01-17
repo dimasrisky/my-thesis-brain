@@ -6,6 +6,9 @@ import { JwtService } from '@nestjs/jwt';
 import { ResponseRegisterDto } from './dto/response-register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ResponseLoginDto } from './dto/response-login.dto';
+import { IJwtPayload } from 'src/common/interfaces/jwt-payload.interface';
+import { NotFoundException } from 'src/common/bases/exceptions/templates/not-found.exception';
+import { ResponseUserDto } from '../user/dto/response-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +29,19 @@ export class AuthService {
       console.log(err);
       throw err;
     }
+  }
+
+  async me(user: IJwtPayload): Promise<ResponseUserDto> {
+    const userPayload = await this.userRepository.findOne({
+      where: {
+        id: user.userId,
+      },
+    });
+
+    if (!userPayload)
+      throw new NotFoundException('user tidak ditemukan', 'user');
+
+    return userPayload;
   }
 
   async login(loginDto: LoginDto): Promise<ResponseLoginDto> {
@@ -49,6 +65,6 @@ export class AuthService {
     const payload = { sub: user.id, email: user.email };
     const token = this.jwtService.sign(payload);
 
-    return { token };
+    return { accessToken: token };
   }
 }

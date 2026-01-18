@@ -43,7 +43,7 @@ export class AuthService {
     if (
       !this.jwtService.verify(
         refreshTokenDto.refreshToken,
-        this.configService.get('adoiawhdoahdo'),
+        this.configService.get('JWT_REFRESH_SECRET'),
       )
     ) {
       throw new BadRequestException(

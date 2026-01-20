@@ -13,6 +13,8 @@ import { DocumentChunksRepository } from './document_chunks.repository';
 import { IMetadata } from './interfaces/metadata.interface';
 import { IJwtPayload } from 'src/common/interfaces/jwt-payload.interface';
 import { ConfigService } from '@nestjs/config';
+import { QueryParameterDto } from 'src/common/dto/query-parameter.dto';
+import { FindManyOptions } from 'typeorm';
 
 @Injectable()
 export class DocumentService extends BaseService<
@@ -40,6 +42,29 @@ export class DocumentService extends BaseService<
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }
+  }
+
+  protected paramBuilder(
+    options?: QueryParameterDto,
+    user?: IJwtPayload,
+  ): FindManyOptions<Document> {
+    const paramBuilderDefault = super.paramBuilder(options);
+
+    paramBuilderDefault.where = {
+      user: {
+        id: user?.userId,
+      },
+    };
+
+    return paramBuilderDefault;
+  }
+
+  async findAndCountDocuments(
+    queryParam: QueryParameterDto,
+    user?: IJwtPayload,
+  ): Promise<[Document[], number]> {
+    const paramBuilder = this.paramBuilder(queryParam, user);
+    return super.findAndCount(queryParam, paramBuilder);
   }
 
   private initializeModel() {

@@ -1,14 +1,19 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
+  Query,
   Request,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CreateSwaggerExample } from 'src/common/swagger/swagger-example.response';
+import {
+  CreateSwaggerExample,
+  ListSwaggerExample,
+} from 'src/common/swagger/swagger-example.response';
 import { ResponseDocumentDto } from './dto/response-document.dto';
 import { DocumentService } from './document.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -17,6 +22,9 @@ import * as path from 'path';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import type { Request as ExpressRequest } from 'express';
+import { FilteringDocumentDto } from './dto/filtering-document.dto';
+import { BaseSuccessResponse } from 'src/common/bases/base.response';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('documents')
 @ApiTags('Document')
@@ -60,26 +68,29 @@ export class DocumentController {
     return result;
   }
 
-  // @Get()
-  // @ListSwaggerExample(ResponseDocumentDto, 'Mengambil Banyak Data File')
-  // async findAndCount(
-  //   @Query() queryParameterDto: FilteringDocumentDto,
-  // ): Promise<BaseSuccessResponse<ResponseDocumentDto>> {
-  //   const { page = 1, limit = 10, isPaginate = true } = queryParameterDto;
-  //   const [result, total] =
-  //     await this.documentService.findAndCount(queryParameterDto);
+  @Get()
+  @ListSwaggerExample(ResponseDocumentDto, 'Mengambil Banyak Data File')
+  async findAndCount(
+    @Query() queryParameterDto: FilteringDocumentDto,
+    @Request() req: ExpressRequest,
+  ): Promise<BaseSuccessResponse<ResponseDocumentDto>> {
+    const { page = 1, limit = 10, isPaginate = true } = queryParameterDto;
+    const [result, total] = await this.documentService.findAndCountDocuments(
+      queryParameterDto,
+      req.user,
+    );
 
-  //   return {
-  //     data: plainToInstance(ResponseDocumentDto, result, {
-  //       excludeExtraneousValues: true,
-  //     }),
-  //     meta: {
-  //       page: isPaginate ? page : 1,
-  //       totalPage: isPaginate ? Math.ceil(total / limit) : 1,
-  //       totalData: total,
-  //     },
-  //   };
-  // }
+    return {
+      data: plainToInstance(ResponseDocumentDto, result, {
+        excludeExtraneousValues: true,
+      }),
+      meta: {
+        page: isPaginate ? page : 1,
+        totalPage: isPaginate ? Math.ceil(total / limit) : 1,
+        totalData: total,
+      },
+    };
+  }
 
   // @Get(':id')
   // @DetailSwaggerExample(ResponseDocumentDto, 'Mengambil Data File dengan ID')

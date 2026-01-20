@@ -4,7 +4,7 @@ services:
     ports:
       - '11434:11434'
     volumes:
-      - 'ollama_data:/root/.ollama'
+      - 'langchain-playground_ollama_data:/root/.ollama'
   db:
     image: pgvector/pgvector:pg16
     ports:
@@ -16,5 +16,6 @@ services:
     volumes:
       - 'postgre_data:/var/lib/postgresql/data'
 volumes:
-  ollama_data:
+  langchain-playground_ollama_data:
+    external: true
   postgre_data:
